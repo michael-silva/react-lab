@@ -5,6 +5,8 @@ import {
   Link,
 } from 'react-router-dom';
 import ErrorBoundary from './pages/ErrorBoudary';
+import Pooling from './pages/Pooling';
+import WebWorker from './pages/WebWorker';
 import logo from './logo.svg';
 import './App.css';
 
@@ -23,10 +25,10 @@ const Home = () => (
             <Link to="/error-boundary">Error Boundary</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/pooling">Pooling</Link>
           </li>
           <li>
-            <Link to="/users">Users</Link>
+            <Link to="/workers">Web Worker</Link>
           </li>
         </ul>
       </nav>
@@ -38,6 +40,8 @@ const App = () => (
   <Router>
     <Routes>
       <Route path="/error-boundary" element={<ErrorBoundary />} />
+      <Route path="/pooling" element={<Pooling />} />
+      <Route path="/workers" element={<WebWorker />} />
       <Route path="/" element={<Home />} />
     </Routes>
   </Router>
