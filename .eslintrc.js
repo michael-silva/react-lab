@@ -27,5 +27,6 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'react/jsx-uses-react': 0,
     'no-restricted-exports': 0,
+    'react/jsx-one-expression-per-line': 0,
   },
 };
