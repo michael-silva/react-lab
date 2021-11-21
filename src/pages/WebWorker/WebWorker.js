@@ -42,7 +42,7 @@ const LocalCounter = () => {
 };
 
 const WebWorkerCounter = () => {
-  const worker = useRef();
+  const worker = useRef(null);
   const [count, setCount] = useState(0);
   const [time, setTime] = useState(0);
 

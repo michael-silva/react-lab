@@ -9,12 +9,13 @@ import debounce from 'lodash/debounce';
 import {
   useEffect, useMemo, useRef, useState,
 } from 'react';
+import { useCallback } from 'react/cjs/react.development';
 import workerFile from './worker';
 import WebWorker from './workerSetup';
 
 // TODO: understand the benefits of hook instead of setInterval function
 const useInterval = (callback, delay) => {
-  const savedCallback = useRef();
+  const savedCallback = useRef(null);
 
   // Remember the latest callback.
   useEffect(() => {
@@ -53,7 +54,7 @@ const promiseTimeout = (callback, timeout) => new Promise((resolve, reject) => {
 
 // TODO: understand the benefits of hook instead of setTimeout function
 const useTimeout = (callback, delay) => {
-  const savedCallback = useRef();
+  const savedCallback = useRef(null);
 
   // Remember the latest callback.
   useEffect(() => {
@@ -79,11 +80,42 @@ const useTimeout = (callback, delay) => {
   }, [delay]);
 };
 
+const useSafeTimeout = () => {
+  const mounted = useRef(true);
+  const timer = useRef(null);
+  const setTimeout = useCallback((callback, delay) => new Promise((resolve, reject) => {
+    timer.current = window.setTimeout((args) => {
+      if (!mounted?.current) return;
+      try {
+        const result = callback(args);
+        resolve(result);
+      } catch (e) {
+        reject(e);
+      }
+    }, delay);
+  }), []);
+
+  // eslint-disable-next-line arrow-body-style
+  useEffect(() => {
+    // TODO: I really need this ref to find out if component is dismounted
+    return () => {
+      mounted.current = false;
+      clearTimeout(timer);
+    };
+  }, []);
+
+  return setTimeout;
+};
+
 const usePooling = (callback, interval) => {
   const [lastExecution, setLastExecution] = useState(null);
+
   useEffect(() => {
+    // TODO: an local variabel is really the best way to find out if component is dismounted
+    let isDismounted = false;
     const delay = lastExecution ? Date.now() - lastExecution : 0;
     const timer = setTimeout(async () => {
+      if (isDismounted) return;
       setLastExecution(Date.now());
       try {
         await callback();
@@ -91,7 +123,10 @@ const usePooling = (callback, interval) => {
         console.log(e);
       }
     }, interval - delay);
-    return () => clearTimeout(timer);
+    return () => {
+      isDismounted = true;
+      clearTimeout(timer);
+    };
   }, [lastExecution, interval, callback]);
 };
 
@@ -102,9 +137,10 @@ const PoolingNumber = () => {
   const [number, setNumber] = useState(null);
   const [loading, setLoading] = useState(true);
   const firstLoading = loading && number === null;
+  const setTimeout = useSafeTimeout();
   usePooling(async () => {
     setLoading(true);
-    await promiseTimeout(() => {
+    await setTimeout(() => {
       setNumber(Date.now());
       setLoading(false);
     }, Math.random() * INTERVAL);
@@ -188,7 +224,7 @@ const AsyncFilterList = ({ }) => {
 };
 
 const WebWorkerFilterList = ({ }) => {
-  const worker = useRef();
+  const worker = useRef(null);
   const [names, setNames] = useState([]);
   const [query, setQuery] = useState('');
 
