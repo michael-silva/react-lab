@@ -9,6 +9,7 @@ import Pooling from './pages/Pooling';
 import WebWorker from './pages/WebWorker';
 import Random from './pages/Random';
 import Lifecycle from './pages/Lifecycle';
+import Forms from './pages/Forms';
 import logo from './logo.svg';
 import './App.css';
 
@@ -36,6 +37,9 @@ const Home = () => (
             <Link to="/lifecycle">Lifecycle</Link>
           </li>
           <li>
+            <Link to="/forms">Forms</Link>
+          </li>
+          <li>
             <Link to="/random">Random</Link>
           </li>
         </ul>
@@ -51,6 +55,7 @@ const App = () => (
       <Route path="/pooling" element={<Pooling />} />
       <Route path="/workers" element={<WebWorker />} />
       <Route path="/lifecycle" element={<Lifecycle />} />
+      <Route path="/forms" element={<Forms />} />
       <Route path="/random" element={<Random />} />
       <Route path="/" element={<Home />} />
     </Routes>
