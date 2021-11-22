@@ -290,6 +290,48 @@ const ShoppingCartApp = () => (
   </ShoppingCart>
 );
 
+const StoragName = () => {
+  const name = localStorage.getItem('name');
+  const updateName = (e) => localStorage.setItem('name', e.target.value);
+  return (
+    <>
+      <h1>{name}</h1>
+      <input typer="text" value={name} onChange={updateName} />
+    </>
+  );
+};
+
+const SafeStorageName = () => {
+  const [name, setName] = useState('');
+  const updateName = (e) => setName(e.target.value);
+
+  useEffect(() => {
+    const storeName = localStorage.getItem('safe-name');
+    if (storeName) {
+      setName(storeName);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('safe-name', name);
+  }, [name]);
+
+  return (
+    <>
+      <h1>{name}</h1>
+      <input typer="text" value={name} onChange={updateName} />
+    </>
+  );
+};
+
+const CollateralsApp = () => (
+  <>
+    <h1>Collaterals</h1>
+    <StoragName />
+    <SafeStorageName />
+  </>
+);
+
 const RandomPage = () => (
 
   <div className="root" data-testid="Random">
@@ -297,6 +339,7 @@ const RandomPage = () => (
     <ToogleApp />
     <SliderApp />
     <ShoppingCartApp />
+    <CollateralsApp />
   </div>
 );
 

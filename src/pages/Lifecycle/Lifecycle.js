@@ -1,6 +1,7 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
 import React, {
-  useCallback, useContext, useMemo, useState,
+  useCallback, useContext, useMemo, useRef, useState,
 } from 'react';
 import { useEffect } from 'react/cjs/react.development';
 import './Lifecycle.css';
@@ -120,7 +121,6 @@ const Component2 = ({ name }) => {
     addCounter(name);
   }, [addCounter, name]);
 
-  // PREVENT from unnecessary reloads
   return (
     <div>
       <p>{name}: {counter} (updated at {time})</p>
@@ -278,10 +278,53 @@ const LifecycleApp2 = () => {
   );
 };
 
+const ValueContext = React.createContext();
+const OnChangeContext = React.createContext();
+
+const LifecycleApp3 = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <OnChangeContext.Provider value={setCount}>
+      <ValueContext.Provider value={count}>
+        <Value />
+        <Update />
+      </ValueContext.Provider>
+    </OnChangeContext.Provider>
+  );
+};
+
+const Value = React.memo(() => {
+  const value = useContext(ValueContext);
+  return <div>{value}</div>;
+});
+
+const Update = React.memo(() => {
+  const onChange = useContext(OnChangeContext);
+  // eslint-disable-next-line react/button-has-type
+  return <button onClick={() => onChange((n) => n + 1)}>update</button>;
+});
+
+const RenderCounter = ({ children }) => {
+  const renderCount = useRef(0);
+  // the text will render to a random color for
+  // each instance of the Message component
+  const getColor = () => (Math.floor(Math.random() * 255));
+  const style = {
+    color: `rgb(${getColor()},${getColor()},${getColor()})`,
+  };
+  return (
+    <div>
+      <h4 style={style}>{children}<span> ({++renderCount.current})</span></h4>
+    </div>
+  );
+};
+
 const LifecyclePage = () => console.log('render page') ?? (
   <div className="root" data-testid="Lifecycle">
-
+    <LifecycleApp1 />
     <LifecycleApp2 />
+    <LifecycleApp3 />
   </div>
 );
 
