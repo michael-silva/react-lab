@@ -12,6 +12,9 @@ import Lifecycle from './pages/Lifecycle';
 import Forms from './pages/Forms';
 import logo from './logo.svg';
 import './App.css';
+import Fetch from './pages/Fetch';
+import DynamicComponent from './pages/DynamicComponent';
+import CoolPortal from './pages/CoolPortal';
 
 const Home = () => (
   <div className="App">
@@ -40,6 +43,15 @@ const Home = () => (
             <Link to="/forms">Forms</Link>
           </li>
           <li>
+            <Link to="/fetch">Fetch</Link>
+          </li>
+          <li>
+            <Link to="/cool-portal">Cool Portal</Link>
+          </li>
+          <li>
+            <Link to="/dynamic">Dynamic Component</Link>
+          </li>
+          <li>
             <Link to="/random">Random</Link>
           </li>
         </ul>
@@ -56,6 +68,9 @@ const App = () => (
       <Route path="/workers" element={<WebWorker />} />
       <Route path="/lifecycle" element={<Lifecycle />} />
       <Route path="/forms" element={<Forms />} />
+      <Route path="/cool-portal" element={<CoolPortal />} />
+      <Route path="/dynamic" element={<DynamicComponent />} />
+      <Route path="/fetch" element={<Fetch />} />
       <Route path="/random" element={<Random />} />
       <Route path="/" element={<Home />} />
     </Routes>
