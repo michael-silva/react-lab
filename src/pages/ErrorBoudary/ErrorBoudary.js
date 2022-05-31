@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './ErrorBoudary.css';
+import Code from '../../components/code';
 
 const promiseTimeout = (callback, timeout) => new Promise((resolve, reject) => {
   setTimeout((args) => {
@@ -49,8 +50,8 @@ const useSecureEffect = (callback, deps) => {
 };
 
 const ErrorFallback = React.memo(({ error, errorInfo }) => (
-  <div>
-    <h2>Something went wrong.</h2>
+  <div className="notification is-danger is-light">
+    <h2 className="title is-5">Something went wrong.</h2>
     <details style={{ whiteSpace: 'pre-wrap' }}>
       {error && error.toString()}
       <br />
@@ -111,16 +112,16 @@ const RenderErrorButton = ({ children, id }) => {
   }
 
   return (
-    <button type="button" onClick={clickHandle}>{children}</button>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
-const AsyncRenderErrorButton = ({ children, id }) => {
+const AsyncRenderErrorButton = ({ children, id, delay }) => {
   const [hasError, setHasError] = useState(false);
   const clickHandle = () => {
     setTimeout(() => {
       setHasError(true);
-    }, 500);
+    }, delay || 1000);
   };
 
   if (hasError) {
@@ -128,19 +129,19 @@ const AsyncRenderErrorButton = ({ children, id }) => {
   }
 
   return (
-    <button type="button" onClick={clickHandle}>{children}</button>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
-const UncatchErrorBox = ({ children, text }) => {
-  useEffect(() => {
+const AsyncUncatchErrorButton = ({ children, id }) => {
+  const clickHandle = () => {
     setTimeout(() => {
-      throw new Error(`Error for: ${text}`);
+      throw new Error(`Error for: ${id}`);
     }, 2000);
-  }, []);
+  };
 
   return (
-    <div>{text}</div>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
@@ -150,7 +151,7 @@ const UncatchErrorButton = ({ children, id }) => {
   };
 
   return (
-    <button type="button" onClick={clickHandle}>{children}</button>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
@@ -170,7 +171,7 @@ const SecureUncatchErrorButton = ({ children, id }) => {
   }, []);
 
   return (
-    <button type="button" onClick={clickHandle}>{children}</button>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
@@ -182,63 +183,227 @@ const SecureUncatchAsyncErrorButton = ({ children, id }) => {
   }, []);
 
   return (
-    <button type="button" onClick={clickHandle}>{children}</button>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
 };
 
-const AsyncRenderError = withErrorBoundary(({ children, id }) => {
+const CustomFallback = () => <div className="notification is-warning">Componente fallback personalizado para erros dentro do ErrorBoundary</div>;
+const ErrorBoudaryPage = () => {
+  const [showError, setShowError] = useState(false);
+  return (
+    <div className="content">
+      <h1 className="subtitle is-1">Error Boundary</h1>
+      <hr />
+      <p>
+        Nesta página temos varios testes do uso de <strong>ErrorBoundary</strong> na prática,
+        para mais detalhes pode conferir a <a href="https://reactjs.org/docs/error-boundaries.html">documentação oficial</a>.
+      </p>
+      <p>
+        Para todos os exemplos nesta página vamos usar um ErrorBoundary implementado exatamente
+        da forma como é descrita na documentação oficial, apenas testando seu funcionamento em
+        situações adversas. <br />Dito isso para nossso primeiro experimento criamos um botão
+        que ao ser clicado dispare um erro de renderização para que possamos conferir o
+        comportamento do ErrorBoundary.
+      </p>
+      <p>
+        <strong>OBS.</strong> rodando o projeto local uma mensagem de error cobrirá toda a tela,
+        porém ela pode ser fechada para conferir o comportamento do ErrorBoundary em produção
+      </p>
+      <Code>{`const RenderErrorButton = ({ children, id }) => {
   const [hasError, setHasError] = useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      setHasError(true);
-    }, 500);
-  }, []);
+  const clickHandle = () => {
+    setHasError(true);
+  };
 
   if (hasError) {
-    throw new Error(`Error for: ${id}`);
+    throw new Error(\`Error for: \${id}\`);
   }
 
   return (
-    <div>{children}</div>
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
   );
-});
+};
+// Exemplo de uso
+<ErrorBoundary fallback={CustomFallback}>
+  <RenderErrorButton id="1">Click to error</RenderErrorButton>
+  <RenderErrorButton id="2">Click to error</RenderErrorButton>
+</ErrorBoundary>`}
+      </Code>
+      <div className="mb-4">
+        <ErrorBoundary fallback={CustomFallback}>
+          <RenderErrorButton id="1">Dispare um erro</RenderErrorButton>
+          <RenderErrorButton id="2">Dispare outro erro</RenderErrorButton>
+        </ErrorBoundary>
+      </div>
+      <p>
+        Para nosso segundo experimento teremos dois botões cada um seu próprio ErrorBoundary,
+        ao serem clicados eles também disparam erros de renderização, como no primeiro exemplo
+        porém com um delay, esse erro ocorrerá apenas após um setTimeout.
+      </p>
+      <Code>{`const AsyncRenderErrorButton = ({ children, id }) => {
+  const [hasError, setHasError] = useState(false);
+  const clickHandle = () => {
+    setTimeout(() => {
+      setHasError(true);
+    }, 1000);
+  };
 
-const CustomFallback = () => <h2>Custom error</h2>;
-const ErrorBoudaryPage = () => (
-  <>
-    <div className="root" data-testid="ErrorBoudary">
-      ErrorBoudary Component
+  if (hasError) {
+    throw new Error(\`Error for: \${id}\`);
+  }
+
+  return (
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
+  );
+};
+// Exemplo de uso
+<ErrorBoundary>
+  <AsyncRenderErrorButton id="3">Click to async error</AsyncRenderErrorButton>
+</ErrorBoundary>
+<ErrorBoundary>
+  <AsyncRenderErrorButton id="4">Click to async error</AsyncRenderErrorButton>
+</ErrorBoundary>`}
+      </Code>
+      <div className="mb-4">
+        <ErrorBoundary>
+          <AsyncRenderErrorButton id="3">Dispare erro em 1s</AsyncRenderErrorButton>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <AsyncRenderErrorButton id="4" delay={2000}>Dispare erro em 2s</AsyncRenderErrorButton>
+        </ErrorBoundary>
+      </div>
+
+      <p>
+        Para nosso terceiro experimento implementamos situações em que o ErrorBoundary
+        não consegue pegar os erros, o primeiro é um botão que dispare um erro de
+        evento diretamente no evento de clique e o outro é um erro disparado dentro de
+        um setTimeout. <br />
+        <strong>OBS.</strong> Apesar dos exemplos aqui implementados usando o evento de click,
+        as mesmas regras se aplicam para eventos do lifecycle do React como dentro de um useEffect
+        ou useLayoutEffect
+      </p>
+      <Code>{`const UncatchErrorButton = ({ children, id }) => {
+  const clickHandle = () => {
+    throw new Error(\`Error for: \${id}\`);
+  };
+
+  return (
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
+  );
+};
+// Exemplo de uso
+<ErrorBoundary>
+  <UncatchErrorButton id="5">Click to thoew an error</UncatchErrorButton>
+</ErrorBoundary>`}
+      </Code>
+      <div className="mb-4">
+        <ErrorBoundary>
+          <UncatchErrorButton id="5">Clique para disparar um erro de evento</UncatchErrorButton>
+        </ErrorBoundary>
+      </div>
+      <Code>{`const AsyncUncatchErrorButton = ({ children, id }) => {
+  const clickHandle = () => {
+    setTimeout(() => {
+      throw new Error(\`Error for: \${id}\`);
+    }, 2000);
+  };
+
+  return (
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
+  );
+};
+// Exemplo de uso
+<ErrorBoundary>
+  <UncatchErrorBox id="5">Click to thoew an error</UncatchErrorBox>
+</ErrorBoundary>`}
+      </Code>
+      <div className="mb-4">
+        <ErrorBoundary>
+          <AsyncUncatchErrorButton id="6">Clique para disparar um erro em 1s</AsyncUncatchErrorButton>
+        </ErrorBoundary>
+      </div>
+      <p>
+        Com isso concluimos que para tratar erros de eventos é necessário o uso de try/catch.
+        Isso nos leva a dois problemas, repetição nos blocos de código para tratamento de erro
+        em multiplas funções e a descentralização do contole de erros, tendo os erros de
+        renderização tratados no ErrorBoundary e os erros de eventos tratados manualmente.
+      </p>
+      <p>
+        Para solucionar estes problemas alguns simples hooks podem evitar a repetição de código
+        e converter os erros de evento em erros de renderização, assim centralizando o tratamento
+        de erros apenas nos ErrorBoundary.
+      </p>
+      <Code>
+        {`// Replace the react hook useCallback
+  const useSecureCallback = (callback, deps) => {
+  const [error, setError] = useState(null);
+  const fn = useCallback(async (args) => {
+    try {
+      await callback(args);
+    } catch (e) {
+      setError(e);
+    }
+  }, deps);
+
+  if (error) {
+    // Dispara um erro de renderizão para ser tratado pelo ErrorBoundary
+    throw error;
+  }
+
+  return fn;
+};
+
+// Replace the react hook useEffect
+const useSecureEffect = (callback, deps) => {
+  const [error, setError] = useState(null);
+  useEffect((args) => {
+    try {
+      return callback(args);
+    } catch (e) {
+      setError(e);
+      return undefined;
+    }
+  }, deps);
+
+  if (error) {
+    // Dispara um erro de renderizão para ser tratado pelo ErrorBoundary
+    throw error;
+  }
+};
+// Exemplos de erro tratado pelo ErrorBoundary
+const SecureUncatchErrorButton = ({ children }) => {
+  const clickHandle = useSecureCallback(() => {
+    throw new Error('Unexpected Error');
+  }, []);
+
+  return (
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
+  );
+};
+// Exemplos de erro não tratado
+const SecureUncatchErrorButton = ({ children }) => {
+  const clickHandle = useCallback(() => {
+    throw new Error('Unexpected Error');
+  }, []);
+
+  return (
+    <button className="button is-danger mr-2" type="button" onClick={clickHandle}>{children}</button>
+  );
+};`}
+      </Code>
+      <ErrorBoundary>
+        <SecureUncatchErrorButton id="7">Disparar erro de evento</SecureUncatchErrorButton>
+        <SecureUncatchAsyncErrorButton id="8">Disparar erro depois de 1s</SecureUncatchAsyncErrorButton>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <button type="button" className="button is-warning" onClick={() => setShowError(true)}>
+          Disparar erro ao carregar um novo elemento
+        </button>
+        {showError && <SecureUncatchErrorBox text="Erro disparado dentro de um useSecureEffect" />}
+      </ErrorBoundary>
     </div>
-    <ErrorBoundary fallback={CustomFallback}>
-      <RenderErrorButton id="1">Click to error</RenderErrorButton>
-      <RenderErrorButton id="2">Click to error</RenderErrorButton>
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <AsyncRenderErrorButton id="3">Click to async error</AsyncRenderErrorButton>
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <AsyncRenderErrorButton id="4">Click to async error</AsyncRenderErrorButton>
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <UncatchErrorButton id="5">Click to uncatch error triggered in event</UncatchErrorButton>
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <UncatchErrorBox text="Error uncatch in 1000ms" />
-    </ErrorBoundary>
-    <AsyncRenderError id="7">
-      An error wil be catch and treated here in 2000ms
-    </AsyncRenderError>
-    <ErrorBoundary>
-      <SecureUncatchErrorButton id="6">Click to secure an uncacth error triggered in event</SecureUncatchErrorButton>
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <SecureUncatchErrorBox text="secure Error uncatchon load" />
-    </ErrorBoundary>
-    <ErrorBoundary>
-      <SecureUncatchAsyncErrorButton id="8">Click to secure an uncacth error triggered in 500ms</SecureUncatchAsyncErrorButton>
-    </ErrorBoundary>
-  </>
-);
+  );
+};
 
 ErrorBoudaryPage.propTypes = {};
 
