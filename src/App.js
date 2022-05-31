@@ -59,8 +59,8 @@ const experiments = [
     description: 'Executando o fetch de diferentes formas',
   },
   {
-    name: 'Cool Portal',
-    path: '/cool-portal',
+    name: 'Portal',
+    path: '/portal',
     iconClass: 'mdi-dock-window',
     description: 'Aplicação prática e exemplos criativos do uso de portais',
   },
@@ -274,7 +274,7 @@ const App = () => (
           <Route path="/workers" element={<WebWorker />} />
           <Route path="/lifecycle" element={<Lifecycle />} />
           <Route path="/forms" element={<Forms />} />
-          <Route path="/cool-portal" element={<CoolPortal />} />
+          <Route path="/portal" element={<CoolPortal />} />
           <Route path="/dynamic" element={<DynamicComponent />} />
           <Route path="/fetch" element={<Fetch />} />
           <Route path="/random" element={<Random />} />
