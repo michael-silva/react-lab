@@ -356,6 +356,7 @@ const Notification = ({ open, onClose, children, position }) => {
       botões de voltar ao topo em páginas longas, janelas de chat que abrem por cima
       do conteúdo da página, entre outros outros usos bem parecidos.
     </p>
+    <ActionBar />
     <p>
       Navegando na internet encontrei um exemplo bem diferente do convencional que é
       o uso de Portals para manipulação de janelas de popup, conforme este
@@ -363,7 +364,6 @@ const Notification = ({ open, onClose, children, position }) => {
       E com base nele implementei o exemplo da caixa de email abaixo.
     </p>
     <WindowSample />
-    <ActionBar />
   </div>
 );
 

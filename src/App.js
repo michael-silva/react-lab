@@ -245,7 +245,7 @@ const Layout = () => {
       <div className="column is-3 is-hidden-mobile">
         <Sidebar />
       </div>
-      <div className="column">
+      <div className="column is-9">
         <div
           className={`box ${transitionStage}`}
           onAnimationEnd={() => {
