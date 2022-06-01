@@ -334,8 +334,9 @@ const CollateralsApp = () => (
 
 const RandomPage = () => (
 
-  <div className="root" data-testid="Random">
-    Random component
+  <div className="content">
+    <h1 className="subtitle is-1">[WIP] Random</h1>
+    <hr />
     <ToogleApp />
     <SliderApp />
     <ShoppingCartApp />

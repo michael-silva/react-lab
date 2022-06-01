@@ -12,9 +12,8 @@ const Child = ({ text, onClick = () => null }) => {
     setCounter((c) => c + 1);
     onClick();
   };
-  console.log(`render child ${text}`);
   return (
-    <button type="button" onClick={handleClick}>{text} {counter}</button>
+    <button className="button is-primary is-light mr-4" type="button" onClick={handleClick}>{text} {counter}</button>
   );
 };
 
@@ -24,9 +23,8 @@ const ChildMemo = React.memo(({ text, onClick = () => null }) => {
     setCounter((c) => c + 1);
     onClick();
   };
-  console.log(`render child ${text}`);
   return (
-    <button type="button" onClick={handleClick}>{text} {counter}</button>
+    <button className="button is-primary is-light mr-4" type="button" onClick={handleClick}>{text} {counter}</button>
   );
 });
 
@@ -45,35 +43,55 @@ const Component = ({ name }) => {
     setCounter((c) => c - 1);
     setTime(new Date().toLocaleString());
   };
-  console.log(`render ${name}`);
+
   return (
-    <div>
-      <p>{name}: {counter} (updated at {time})</p>
-      <div>
-        <button type="button" onClick={handleIncrease}>+</button>
-        <button type="button" onClick={handleDecrease}>-</button>
+    <div className="columns is-multiline">
+      <div className="column is-12">
+        <h4 className="subtitle is-6">{name}: {counter} (atualizado em {time})</h4>
+        <p>
+          Ao clicar nos botões em azul pode será gerado um novo render deste Componente Pai
+          assim como seu componentes filhos que não estão memoizados da forma correta, mesmo
+          que eles não usem o valor do contador do Componente Pai e não teriam a
+          necessidade de sofrer um novo render
+        </p>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleIncrease}>+</button>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleDecrease}>-</button>
       </div>
-      <div>
-        <Child text={`child-${name}`} />
-        <ChildMemo text={`memo-${name}`} />
+      <div className="column is-12">
+        <p>
+          Ao clicar nos botões abaixo pode conferir não ocorrerá o render do outro botão nem do
+          Componente Pai, porém ao clicar nos botões em azul o botão memoizado não sofre um
+          render desncessário.
+        </p>
+        <Child text={`Botão 1 - ${name}`} />
+        <ChildMemo text={`Botão 1 com Memo - ${name}`} />
       </div>
-      <div>
-        <Child text={`child-${name}-inc`} onClick={handleIncrease} />
-        <ChildMemo text={`memo-${name}-inc`} onClick={handleIncrease} />
+      <div className="column is-12">
+        <p>
+          Os botões abaixo atualizam o contador do Componente Pai e assim causam um novo render
+          nele e em todos seus componentes filhos sem memoização.
+        </p>
+        <Child text={`Botão 2 - ${name}`} onClick={handleIncrease} />
+        <ChildMemo text={`Botão 2 com Memo - ${name}`} onClick={handleIncrease} />
       </div>
-      <div>
-        <Child text={`child-${name}-dec`} onClick={handleDecrease} />
-        <ChildMemo text={`memo-${name}-dec`} onClick={handleDecrease} />
+      <div className="column is-12">
+        <p>
+          Neste terceiro cenario nosso botão memoizado esta sofrendo o render sempre que o
+          componente pai renderiza e isso ocorre pq apesar de memoizado sua prop <i>onClick</i> é
+          uma função não memoizada com o useCallback e com isso ela será recriada a
+          cada render fazendo com que o boptão entenda que é uma nova função e seja re-renderizada.
+        </p>
+        <Child text={`Botão 3 - ${name}`} onClick={handleDecrease} />
+        <ChildMemo text={`Botão 3 com Memo - ${name}`} onClick={handleDecrease} />
       </div>
     </div>
   );
 };
 
-const LifecycleApp1 = () => console.log('render app') ?? (
-  <div className="root" data-testid="Lifecycle">
-    Lifecycle Component
-    <Component name="component 1" />
-    <Component name="component 2" />
+const LifecycleApp1 = () => (
+  <div className="box">
+    <h3 className="title is-4">Componente Pai</h3>
+    <Component name="Componente Filho" />
   </div>
 );
 
@@ -87,7 +105,7 @@ const Child2 = ({ text, onClick = () => null }) => {
   };
   console.log(`render child ${text}`);
   return (
-    <button type="button" onClick={handleClick}>{text} {counter}</button>
+    <button className="button is-primary is-light mr-4" type="button" onClick={handleClick}>{text} {counter}</button>
   );
 };
 
@@ -99,7 +117,7 @@ const ChildMemo2 = React.memo(({ text, onClick = () => null }) => {
   };
   console.log(`render child ${text}`);
   return (
-    <button type="button" onClick={handleClick}>{text} {counter}</button>
+    <button className="button is-primary is-light mr-4" type="button" onClick={handleClick}>{text} {counter}</button>
   );
 });
 
@@ -122,23 +140,46 @@ const Component2 = ({ name }) => {
   }, [addCounter, name]);
 
   return (
-    <div>
-      <p>{name}: {counter} (updated at {time})</p>
-      <div>
-        <button type="button" onClick={handleIncrease}>+</button>
-        <button type="button" onClick={handleDecrease}>-</button>
+    <div className="columns is-multiline">
+      <div className="column is-12">
+        <h4 className="subtitle is-6">{name}: {counter} (atualizado em {time})</h4>
+        <p>
+          Ao clicar nos botões em azul pode será gerado um novo render deste Componente Pai
+          assim como seu coponentes filhos que não estão memoizados da forma correta, mesmo
+          que eles não usem o valor do contador do Componente Pai e não teriam a
+          necessidade de sofrer um novo render
+        </p>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleIncrease}>+</button>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleDecrease}>-</button>
       </div>
-      <div>
-        <Child2 text={`child-${name}`} />
-        <ChildMemo2 text={`memo-${name}`} />
+      <div className="column is-12">
+        <p>
+          Ao clicar nos botões abaixo pode conferir sua independência, não causando render um
+          ao outro ou no Componente Pai. Porém ao clicar nos botões em azul pdoe conferir que
+          o botão memoizado não sofre um render desncessário enquanto o outro renderzida novamente.
+        </p>
+        <Child text={`Botão 1 - ${name}`} />
+        <ChildMemo text={`Botão 1 com Memo - ${name}`} />
       </div>
-      <div>
-        <Child2 text={`child-${name}-inc`} onClick={handleIncrease} />
-        <ChildMemo2 text={`memo-${name}-inc`} onClick={handleIncrease} />
+      <div className="column is-12">
+        <p>
+          Os botões abaixo atualizam o contador do Componente Pai e assim causam um novo render
+          nele e em todos seus componentes filhos sem memoização. Este exemplo torna evidente
+          como o não uso ou mal uso da memoização podem causar renders inesperados.
+        </p>
+        <Child text={`Botão 2 - ${name}`} onClick={handleIncrease} />
+        <ChildMemo text={`Botão 2 com Memo - ${name}`} onClick={handleIncrease} />
       </div>
-      <div>
-        <Child2 text={`child-${name}-dec`} onClick={handleDecrease} />
-        <ChildMemo2 text={`memo-${name}-dec`} onClick={handleDecrease} />
+      <div className="column is-12">
+        <p>
+          Neste terceiro cenario nosso botão memoizado esta sofrendo o render sempre que o
+          componente pai renderiza e isso ocorre pq apesar de memoizado sua prop onClick é
+          uma função não memoizada com o useCallback e isso faz com que ela seja recriada
+          a cada render causando um novo render no botão memoizado que entende que houveram
+          atualizações.
+        </p>
+        <Child text={`Botão 3 - ${name}`} onClick={handleDecrease} />
+        <ChildMemo text={`Botão 3 com Memo - ${name}`} onClick={handleDecrease} />
       </div>
     </div>
   );
@@ -163,24 +204,47 @@ const Component2Optmized = ({ name }) => {
   }, [addCounter, name]);
 
   // PREVENT from unnecessary reloads
-  return useMemo(() => console.log(`render ${name}`) ?? (
-    <div>
-      <p>{name}: {counter} (updated at {time})</p>
-      <div>
-        <button type="button" onClick={handleIncrease}>+</button>
-        <button type="button" onClick={handleDecrease}>-</button>
+  return useMemo(() => (
+    <div className="columns is-multiline">
+      <div className="column is-12">
+        <h4 className="subtitle is-6">{name}: {counter} (atualizado em {time})</h4>
+        <p>
+          Ao clicar nos botões em azul pode será gerado um novo render deste Componente Pai
+          assim como seu coponentes filhos que não estão memoizados da forma correta, mesmo
+          que eles não usem o valor do contador do Componente Pai e não teriam a
+          necessidade de sofrer um novo render
+        </p>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleIncrease}>+</button>
+        <button className="button is-link is-light mr-4" type="button" onClick={handleDecrease}>-</button>
       </div>
-      <div>
-        <Child2 text={`child-${name}`} />
-        <ChildMemo2 text={`memo-${name}`} />
+      <div className="column is-12">
+        <p>
+          Ao clicar nos botões abaixo pode conferir sua independência, não causando render um
+          ao outro ou no Componente Pai. Porém ao clicar nos botões em azul pdoe conferir que
+          o botão memoizado não sofre um render desncessário enquanto o outro renderzida novamente.
+        </p>
+        <Child text={`Botão 1 - ${name}`} />
+        <ChildMemo text={`Botão 1 com Memo - ${name}`} />
       </div>
-      <div>
-        <Child2 text={`child-${name}-inc`} onClick={handleIncrease} />
-        <ChildMemo2 text={`memo-${name}-inc`} onClick={handleIncrease} />
+      <div className="column is-12">
+        <p>
+          Os botões abaixo atualizam o contador do Componente Pai e assim causam um novo render
+          nele e em todos seus componentes filhos sem memoização. Este exemplo torna evidente
+          como o não uso ou mal uso da memoização podem causar renders inesperados.
+        </p>
+        <Child text={`Botão 2 - ${name}`} onClick={handleIncrease} />
+        <ChildMemo text={`Botão 2 com Memo - ${name}`} onClick={handleIncrease} />
       </div>
-      <div>
-        <Child2 text={`child-${name}-dec`} onClick={handleDecrease} />
-        <ChildMemo2 text={`memo-${name}-dec`} onClick={handleDecrease} />
+      <div className="column is-12">
+        <p>
+          Neste terceiro cenario nosso botão memoizado esta sofrendo o render sempre que o
+          componente pai renderiza e isso ocorre pq apesar de memoizado sua prop onClick é
+          uma função não memoizada com o useCallback e isso faz com que ela seja recriada
+          a cada render causando um novo render no botão memoizado que entende que houveram
+          atualizações.
+        </p>
+        <Child text={`Botão 3 - ${name}`} onClick={handleDecrease} />
+        <ChildMemo text={`Botão 3 com Memo - ${name}`} onClick={handleDecrease} />
       </div>
     </div>
   ), [name, counter]);
@@ -222,8 +286,8 @@ const Component2MemoView = React.memo(({
   <div>
     <p>{name}: {counter} (updated at {time})</p>
     <div>
-      <button type="button" onClick={handleIncrease}>+</button>
-      <button type="button" onClick={handleDecrease}>-</button>
+      <button className="button is-primary is-light mr-4" type="button" onClick={handleIncrease}>+</button>
+      <button className="button is-primary is-light mr-4" type="button" onClick={handleDecrease}>-</button>
     </div>
     <div>
       <Child2 text={`child-${name}`} />
@@ -265,9 +329,10 @@ const LifecycleApp2 = () => {
   const value = useMemo(() => ({
     incCounter, decCounter, addCounter, counters,
   }), [incCounter, decCounter, addCounter, counters]);
+
   return (
-    <div className="root" data-testid="Lifecycle">
-      Lifecycle Component
+    <div className="box">
+      <h3 className="title is-4">Componente Pai</h3>
       <GlobalContext.Provider value={value}>
         <Component2 name="component 1" />
         <Component2 name="component 2" />
@@ -302,7 +367,7 @@ const Value = React.memo(() => {
 const Update = React.memo(() => {
   const onChange = useContext(OnChangeContext);
   // eslint-disable-next-line react/button-has-type
-  return <button onClick={() => onChange((n) => n + 1)}>update</button>;
+  return <button className="button is-primary is-light mr-4" onClick={() => onChange((n) => n + 1)}>update</button>;
 });
 
 const RenderCounter = ({ children }) => {
@@ -320,11 +385,13 @@ const RenderCounter = ({ children }) => {
   );
 };
 
-const LifecyclePage = () => console.log('render page') ?? (
-  <div className="root" data-testid="Lifecycle">
+const LifecyclePage = () => (
+  <div className="content">
+    <h1 className="subtitle is-1">[WIP] React Lifecycle</h1>
+    <hr />
     <LifecycleApp1 />
     <LifecycleApp2 />
-    <LifecycleApp3 />
+    {/* <LifecycleApp3 /> */}
   </div>
 );
 

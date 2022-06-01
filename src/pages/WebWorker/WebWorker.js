@@ -71,11 +71,10 @@ const WebWorkerCounter = () => {
 
 const WebWorkerPage = () => (
   <div className="root" data-testid="WebWorker">
-    WebWorker Component
-    <div className="App-bottom">
-      <LocalCounter />
-      <WebWorkerCounter />
-    </div>
+    <h1 className="subtitle is-1">[WIP] WebWorker</h1>
+    <hr />
+    <LocalCounter />
+    <WebWorkerCounter />
   </div>
 );
 
