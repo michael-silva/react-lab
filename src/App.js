@@ -125,7 +125,7 @@ const Navbar = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="field is-grouped">
-              <p className="control">
+              {/* <p className="control">
                 <a className="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" data-social-target="https://bulma.io" target="_blank" href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms" rel="noreferrer">
                   <span className="icon">
                     <i className="mdi mdi-twitter" />
@@ -134,9 +134,9 @@ const Navbar = () => {
                     Tweet
                   </span>
                 </a>
-              </p>
+              </p> */}
               <p className="control">
-                <a className="button is-primary" href="https://github.com/michael-silva/react-lab">
+                <a className="button is-primary" href="https://github.com/michael-silva/react-lab" target="_blank" rel="noreferrer">
                   <span className="icon">
                     <i className="mdi mdi-github" />
                   </span>
@@ -263,7 +263,7 @@ const Layout = () => {
 };
 
 const App = () => (
-  <Router>
+  <Router basename={process.env.PUBLIC_URL}>
     <Navbar />
     <div className="container is-fluid">
       <Routes>

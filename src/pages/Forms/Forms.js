@@ -10,8 +10,8 @@ import {
 import * as Yup from 'yup';
 import React, {
   useCallback, useContext, useMemo, useState,
+  useEffect,
 } from 'react';
-import { useEffect } from 'react/cjs/react.development';
 import Code from '../../components/code';
 
 const signupSchema = Yup.object({

@@ -1,9 +1,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
 import React, {
-  useCallback, useContext, useMemo, useRef, useState,
+  useCallback, useContext, useMemo, useRef, useState, useEffect,
 } from 'react';
-import { useEffect } from 'react/cjs/react.development';
 import './Lifecycle.css';
 
 const Child = ({ text, onClick = () => null }) => {

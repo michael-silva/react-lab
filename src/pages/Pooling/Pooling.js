@@ -8,8 +8,8 @@ import './Pooling.css';
 import debounce from 'lodash/debounce';
 import {
   useEffect, useMemo, useRef, useState,
+  useCallback,
 } from 'react';
-import { useCallback } from 'react/cjs/react.development';
 import workerFile from './worker';
 import WebWorker from './workerSetup';
 
