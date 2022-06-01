@@ -12,6 +12,7 @@ import React, {
   useCallback, useContext, useMemo, useState,
 } from 'react';
 import { useEffect } from 'react/cjs/react.development';
+import Code from '../../components/code';
 
 const signupSchema = Yup.object({
   firstName: Yup.string()
@@ -35,50 +36,71 @@ const SignupForm = () => {
       alert(JSON.stringify(values, null, 2));
     },
   });
-  console.log('SignupForm');
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <h1>Signup Form</h1>
-      <label htmlFor="firstName">First Name</label>
-      <input
-        id="firstName"
-        name="firstName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.firstName}
-      />
-      {formik.touched.firstName && formik.errors.firstName ? (
-        <div>{formik.errors.firstName}</div>
-      ) : null}
+    <form className="box" onSubmit={formik.handleSubmit}>
+      <h1 className="subtitle is-5">Signup Form</h1>
+      <div className="field">
+        <label className="label" htmlFor="firstName">First Name</label>
+        <div className="control">
+          <input
+            className={`input ${formik.errors.firstName ? 'is-danger' : ''}`}
+            id="firstName"
+            name="firstName"
+            type="text"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.firstName}
+          />
+        </div>
+        {formik.touched.firstName && formik.errors.firstName ? (
+          <p className="help is-danger">{formik.errors.firstName}</p>
+        ) : null}
+      </div>
 
-      <label htmlFor="lastName">Last Name</label>
-      <input
-        id="lastName"
-        name="lastName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.lastName}
-      />
-      {formik.touched.lastName && formik.errors.lastName ? (
-        <div>{formik.errors.lastName}</div>
-      ) : null}
+      <div className="field">
+        <label className="label" htmlFor="lastName">Last Name</label>
+        <div className="control">
+          <input
+            className={`input ${formik.errors.lastName ? 'is-danger' : ''}`}
+            id="lastName"
+            name="lastName"
+            type="text"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.lastName}
+          />
+        </div>
+        {formik.touched.lastName && formik.errors.lastName ? (
+          <p className="help is-danger">{formik.errors.lastName}</p>
+        ) : null}
+      </div>
 
-      <label htmlFor="email">Email Address</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.email}
-      />
-      {formik.touched.email && formik.errors.email ? (
-        <div>{formik.errors.email}</div>
-      ) : null}
+      <div className="field">
+        <label className="label" htmlFor="email">Email Address</label>
+        <div className="control">
+          <input
+            className={`input ${formik.errors.email ? 'is-danger' : ''}`}
+            id="email"
+            name="email"
+            type="email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+          />
+        </div>
+        {formik.touched.email && formik.errors.email ? (
+          <p className="help is-danger">{formik.errors.email}</p>
+        ) : null}
+      </div>
 
-      <button type="submit">Submit</button>
+      <div className="field is-grouped">
+        <div className="control">
+          <button type="submit" className="button is-primary">Submit</button>
+        </div>
+        <div className="control">
+          <button type="button" className="button is-link is-light">Cancel</button>
+        </div>
+      </div>
     </form>
   );
 };
@@ -89,13 +111,20 @@ const MyTextInput = React.memo(({ label, ...props }) => {
   // message if the field is invalid and it has been touched (i.e. visited)
   const [field, meta] = useField(props);
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className="text-input" {...field} {...props} />
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <input
+          className={`input ${meta.error ? 'is-danger' : ''}`}
+          type="text"
+          {...field}
+          {...props}
+        />
+      </div>
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
-    </>
+    </div>
   );
 });
 
@@ -106,27 +135,33 @@ const MyCheckbox = React.memo(({ children, ...props }) => {
   // in `field` alongside `name`, `value`, `onChange`, and `onBlur`
   const [field, meta] = useField({ ...props, type: 'checkbox' });
   return (
-    <div>
-      <label className="checkbox-input">
-        <input type="checkbox" {...field} {...props} />
-        {children}
-      </label>
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+    <div className="field">
+      <div className="control">
+        <label className="checkbox">
+          <input type="checkbox" {...field} {...props} />
+          {children}
+        </label>
+        {meta.touched && meta.error ? (
+          <div className="error">{meta.error}</div>
+        ) : null}
+      </div>
     </div>
   );
 });
 
-const MySelect = React.memo(({ label, ...props }) => {
+const MySelect = React.memo(({ label, children, ...props }) => {
   const [field, meta] = useField(props);
   return (
-    <div>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <select {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <div className="select">
+          <select {...field} {...props}>{children}</select>
+          {meta.touched && meta.error ? (
+            <div className="error">{meta.error}</div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 });
@@ -160,15 +195,15 @@ const SignupForm2 = () => {
   const handleSubmit = useCallback((values) => {
     alert(JSON.stringify(values, null, 2));
   }, []);
-  console.log('SignupForm2');
+
   return (
     <Formik
       initialValues={signup2InitialValues}
       validationSchema={signup2Schema}
       onSubmit={handleSubmit}
     >
-      <Form>
-        <h1>Signup Form 2</h1>
+      <Form className="box">
+        <h1 className="subtitle is-5">Signup Form</h1>
         <MyTextInput
           label="First Name"
           name="firstName"
@@ -202,7 +237,14 @@ const SignupForm2 = () => {
           I accept the terms and conditions
         </MyCheckbox>
 
-        <button type="submit">Submit</button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button type="submit" className="button is-primary">Submit</button>
+          </div>
+          <div className="control">
+            <button type="button" className="button is-link is-light">Cancel</button>
+          </div>
+        </div>
       </Form>
     </Formik>
   );
@@ -218,26 +260,25 @@ const friendsInitialValues = {
 };
 
 const InviteFriends = () => (
-  <div>
-    <h1>Invite friends</h1>
-    <Formik
-      initialValues={friendsInitialValues}
-      onSubmit={async (values) => {
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise((r) => setTimeout(r, 500));
-        alert(JSON.stringify(values, null, 2));
-      }}
-    >
-      {({ values }) => (
-        <Form>
-          <FieldArray name="friends">
-            {({ insert, remove, push }) => (
-              <div>
-                {values.friends.length > 0
+  <Formik
+    initialValues={friendsInitialValues}
+    onSubmit={async (values) => {
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise((r) => setTimeout(r, 500));
+      alert(JSON.stringify(values, null, 2));
+    }}
+  >
+    {({ values }) => (
+      <Form className="box">
+        <h1 className="subtitle is-5">Invite friends</h1>
+        <FieldArray name="friends">
+          {({ insert, remove, push }) => (
+            <div>
+              {values.friends.length > 0
                   && values.friends.map((friend, index) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    <div className="row" key={index}>
-                      <div className="col">
+                    <div className="columns" key={index}>
+                      <div className="column">
                         <MyTextInput
                           label="Name"
                           name={`friends.${index}.name`}
@@ -246,7 +287,7 @@ const InviteFriends = () => (
                         />
 
                       </div>
-                      <div className="col">
+                      <div className="column">
                         <MyTextInput
                           label="Email"
                           name={`friends.${index}.email`}
@@ -254,41 +295,46 @@ const InviteFriends = () => (
                           placeholder="jane@formik.com"
                         />
                       </div>
-                      <div className="col">
+                      <div className="column">
                         <button
+                          aria-label="Delete"
                           type="button"
-                          className="secondary"
+                          className="delete"
                           onClick={() => remove(index)}
-                        >
-                          X
-                        </button>
+                        />
                       </div>
                     </div>
                   ))}
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => push({ name: '', email: '' })}
-                >
-                  Add Friend
-                </button>
+
+              <div className="field mb-4">
+                <div className="control">
+                  <button type="button" className="button is-success" onClick={() => push({ name: '', email: '' })}>Add Friend</button>
+                </div>
               </div>
-            )}
-          </FieldArray>
-          <button type="submit">Invite</button>
-        </Form>
-      )}
-    </Formik>
-  </div>
+            </div>
+          )}
+        </FieldArray>
+
+        <div className="field is-grouped">
+          <div className="control">
+            <button type="submit" className="button is-primary">Invite</button>
+          </div>
+          <div className="control">
+            <button type="button" className="button is-link is-light">Cancel</button>
+          </div>
+        </div>
+      </Form>
+    )}
+  </Formik>
 );
 
 async function fetchNewTextC(a, b) {
   // eslint-disable-next-line no-promise-executor-return
   await new Promise((r) => setTimeout(r, 500));
-  return `textA: ${a}, textB: ${b}`;
+  return `${a}:${b}`;
 }
 
-const ResultField = (props) => {
+const ResultField = ({ label, ...props }) => {
   const {
     values: { textA, textB },
     setFieldValue,
@@ -312,10 +358,13 @@ const ResultField = (props) => {
   }, [textB, textA, setFieldValue, props.name]);
 
   return (
-    <>
-      <input key="input" disabled {...props} {...field} />
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <input className="input" disabled {...props} {...field} />
+      </div>
       {Boolean(meta.touched && meta.error) ?? <div>{meta.error.toString()}</div>}
-    </>
+    </div>
   );
 };
 
@@ -330,7 +379,8 @@ const LinkedForm = () => {
       initialValues={initialValues}
       onSubmit={handleSubmit}
     >
-      <Form>
+      <Form className="box">
+        <h1 className="subtitle is-5">Linked fields</h1>
         <MyTextInput
           label="textA"
           name="textA"
@@ -346,7 +396,14 @@ const LinkedForm = () => {
           name="textC"
         />
 
-        <button type="submit">Submit</button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button type="submit" className="button is-primary">Submit</button>
+          </div>
+          <div className="control">
+            <button type="button" className="button is-link is-light">Cancel</button>
+          </div>
+        </div>
       </Form>
     </Formik>
   );
@@ -394,48 +451,70 @@ const SignupFormSimple = () => {
 
   console.log('SignupFormSimple');
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Signup Form Simple</h1>
-      <label htmlFor="firstName">First Name</label>
-      <input
-        id="firstName"
-        name="firstName"
-        type="text"
-        onChange={handleChange}
-        onBlur={handleBlur}
-        value={values.firstName}
-      />
-      {touched.firstName && errors.firstName ? (
-        <div>{errors.firstName}</div>
-      ) : null}
+    <form className="box" onSubmit={handleSubmit}>
+      <h1 className="subtitle is-5">Signup Form</h1>
+      <div className="field">
+        <label className="label" htmlFor="firstName">First Name</label>
+        <div className="control">
+          <input
+            className={`input ${errors.firstName ? 'is-danger' : ''}`}
+            id="firstName"
+            name="firstName"
+            type="text"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.firstName}
+          />
+        </div>
+        {touched.firstName && errors.firstName ? (
+          <p className="help is-danger">{errors.firstName}</p>
+        ) : null}
+      </div>
 
-      <label htmlFor="lastName">Last Name</label>
-      <input
-        id="lastName"
-        name="lastName"
-        type="text"
-        onChange={handleChange}
-        onBlur={handleBlur}
-        value={values.lastName}
-      />
-      {touched.lastName && errors.lastName ? (
-        <div>{errors.lastName}</div>
-      ) : null}
+      <div className="field">
+        <label className="label" htmlFor="lastName">Last Name</label>
+        <div className="control">
+          <input
+            className={`input ${errors.lastName ? 'is-danger' : ''}`}
+            id="lastName"
+            name="lastName"
+            type="text"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.lastName}
+          />
+        </div>
+        {touched.lastName && errors.lastName ? (
+          <p className="help is-danger">{errors.lastName}</p>
+        ) : null}
+      </div>
 
-      <label htmlFor="email">Email Address</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        onChange={handleChange}
-        onBlur={handleBlur}
-        value={values.email}
-      />
-      {touched.email && errors.email ? (
-        <div>{errors.email}</div>
-      ) : null}
+      <div className="field">
+        <label className="label" htmlFor="email">Email Address</label>
+        <div className="control">
+          <input
+            className={`input ${errors.email ? 'is-danger' : ''}`}
+            id="email"
+            name="email"
+            type="email"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.email}
+          />
+        </div>
+        {touched.email && errors.email ? (
+          <p className="help is-danger">{errors.email}</p>
+        ) : null}
+      </div>
 
-      <button type="submit">Submit</button>
+      <div className="field is-grouped">
+        <div className="control">
+          <button type="submit" className="button is-primary">Submit</button>
+        </div>
+        <div className="control">
+          <button type="button" className="button is-link is-light">Cancel</button>
+        </div>
+      </div>
     </form>
   );
 };
@@ -466,13 +545,20 @@ const MyTextInputSimple = React.memo(({ label, ...props }) => {
   // message if the field is invalid and it has been touched (i.e. visited)
   const [field, meta] = useFormField(props);
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className="text-input" {...field} {...props} />
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <input
+          className={`input ${meta.error ? 'is-danger' : ''}`}
+          type="text"
+          {...field}
+          {...props}
+        />
+      </div>
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
-    </>
+    </div>
   );
 });
 
@@ -483,27 +569,33 @@ const MyCheckboxSimple = React.memo(({ children, ...props }) => {
   // in `field` alongside `name`, `value`, `onChange`, and `onBlur`
   const [field, meta] = useFormField({ ...props, type: 'checkbox' });
   return (
-    <div>
-      <label className="checkbox-input">
-        <input type="checkbox" {...field} {...props} />
-        {children}
-      </label>
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+    <div className="field">
+      <div className="control">
+        <label className="checkbox">
+          <input type="checkbox" {...field} {...props} />
+          {children}
+        </label>
+        {meta.touched && meta.error ? (
+          <div className="error">{meta.error}</div>
+        ) : null}
+      </div>
     </div>
   );
 });
 
-const MySelectSimple = React.memo(({ label, ...props }) => {
+const MySelectSimple = React.memo(({ label, children, ...props }) => {
   const [field, meta] = useFormField(props);
   return (
-    <div>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <select {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <div className="select">
+          <select {...field} {...props}>{children}</select>
+          {meta.touched && meta.error ? (
+            <div className="error">{meta.error}</div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 });
@@ -524,7 +616,7 @@ const SignupForm2Simple = () => {
   console.log('SignupForm2Simple');
   return (
     <FormContext.Provider value={value}>
-      <form onSubmit={handleSubmit}>
+      <form className="box" onSubmit={handleSubmit}>
         <h1>Signup Form Simple 2</h1>
         <MyTextInputSimple
           label="First Name"
@@ -559,63 +651,220 @@ const SignupForm2Simple = () => {
           I accept the terms and conditions
         </MyCheckboxSimple>
 
-        <button type="submit">Submit</button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button type="submit" className="button is-primary">Submit</button>
+          </div>
+          <div className="control">
+            <button type="button" className="button is-link is-light">Cancel</button>
+          </div>
+        </div>
       </form>
     </FormContext.Provider>
   );
 };
-const Reservation = () => {
-  const [formData, setFormData] = useState({
-    isGoing: true,
-    numberOfGuests: 2,
-  });
-
-  const handleInputChange = (event) => {
-    const { target } = event;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const { name } = target;
-
-    setFormData((data) => ({
-      ...data,
-      [name]: value,
-    }));
-  };
-
-  return (
-    <form>
-      <label>
-        Estão indo:
-        <input
-          name="isGoing"
-          type="checkbox"
-          checked={formData.isGoing}
-          onChange={handleInputChange}
-        />
-      </label>
-      <br />
-      <label>
-        Número de convidados:
-        <input
-          name="numberOfGuests"
-          type="number"
-          value={formData.numberOfGuests}
-          onChange={handleInputChange}
-        />
-      </label>
-    </form>
-  );
-};
 
 const Forms = () => (
-  <div className="root" data-testid="Forms">
-    Forms Component
+  <div className="content">
+    <h1 className="subtitle is-1">Form Handling</h1>
+    <hr />
+    <p>
+      Objetivo aqui é testar diferentes formas de tratamento de formulários em react,
+      para iniciar testaremos a lib <a href="https://formik.org/">Formik</a> usando o hook useFormk.<br />
+      Neste teste achei bem prático o uso do hook, porem o html se torna bem extenso e repetitivo.
+    </p>
+    <Code>
+      {`const SignupForm = () => {
+        const formik = useFormik({
+          initialValues: signupInitialValues,
+          validationSchema: signupSchema,
+          onSubmit: (values) => {
+            alert(JSON.stringify(values, null, 2));
+          },
+        });
+        return (
+          <form className="box" onSubmit={formik.handleSubmit}>
+            <h1 className="subtitle is-5">Signup Form</h1>
+            <div className="field">
+              <label className="label" htmlFor="firstName">First Name</label>
+              <div className="control">
+                <input
+                  className="input"
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.firstName}
+                />
+              </div>
+              {formik.touched.firstName && formik.errors.firstName ? (
+                <p className="help is-danger">{formik.errors.firstName}</p>
+              ) : null}
+            </div>
+            {/* Resto do html do formulário  */}
+      
+            <div className="field is-grouped">
+              <div className="control">
+                <button type="submit" className="button is-primary">Submit</button>
+              </div>
+              <div className="control">
+                <button type="button" className="button is-link is-light">Cancel</button>
+              </div>
+            </div>
+          </form>
+        );
+      };`}
+    </Code>
     <SignupForm />
+    <p>
+      Para nosso segundo teste eu usei o Formik element no JSX e abstrai o html dos campos em
+      componentes menores usando o hook useField, essa abordagem garante muito mais reus de código
+      e pouca repetição no JSX.
+    </p>
+    <p>
+      <strong>OBS.</strong> dentro do element Formik podemos usar o <i>form</i> porem teremos que
+      passar manualmente os eventos de onSubmit e onReset, enquanto o elemento <i>Form</i>
+      abstrai essa necessidade reduzindo a quantidade de código escrito.
+    </p>
+    <Code>
+      {`const MyTextInput = React.memo(({ label, ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className="field">
+      <label className="label" htmlFor={props.id || props.name}>{label}</label>
+      <div className="control">
+        <input
+          className='input'
+          type="text"
+          {...field}
+          {...props}
+        />
+      </div>
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
+    </div>
+  );
+});
+const SignupForm = () => {
+  const handleSubmit = useCallback((values) => {
+    alert(JSON.stringify(values, null, 2));
+  }, []);
+
+  return (
+    <Formik
+      initialValues={signup2InitialValues}
+      validationSchema={signup2Schema}
+      onSubmit={handleSubmit}
+    >
+      <Form className="box">
+        <h1 className="subtitle is-5">Signup Form</h1>
+        <MyTextInput
+          label="First Name"
+          name="firstName"
+          type="text"
+          placeholder="Jane"
+        />
+
+        <MyTextInput
+          label="Last Name"
+          name="lastName"
+          type="text"
+          placeholder="Doe"
+        />
+
+        {/* Resto do html do formulário  */}
+
+        <div className="field is-grouped">
+          <div className="control">
+            <button type="submit" className="button is-primary">Submit</button>
+          </div>
+          <div className="control">
+            <button type="button" className="button is-link is-light">Cancel</button>
+          </div>
+        </div>
+      </Form>
+    </Formik>
+  );
+};`}
+    </Code>
     <SignupForm2 />
+    <p>
+      Com os testes anteriores conclui que o Formik de fato é uma lib bem completa que permite
+      formas variadas de uso, porem para nosso teceiro teste vamos tentar replicar de forma minima
+      o funciomaneto dos testes anteriores sem o uso da lib do Formik. Esta será uma forma incrivel
+      de entender melhor o funcionamento dela ou até mesmo replicar sua facilidade em projetos
+      menores que não queiram importar a lib completa para dentro das dependencias.
+    </p>
+    <p>
+      Para replicar o nosso primeiro experimento eu precisei criar um hook similar ao useFormik,
+      tarefa que se mostrou mais simples do que eu esperava e com poucas linhas consegui
+      fazê-lo funcionar.
+    </p>
+    <Code>
+      {`const useForm = (initialValues) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = useCallback((e) => {
+    // eslint-disable-next-line no-shadow
+    setValues((values) => ({ ...values, [e.target.name]: e.target.value }));
+  }, []);
+
+  const handleBlur = useCallback((e) => {
+    // eslint-disable-next-line no-shadow
+    setTouched((touched) => ({ ...touched, [e.target.name]: true }));
+  }, []);
+
+  useEffect(() => {
+    const validation = () => {
+      signupSchema.validate(values, { abortEarly: false })
+        .catch((yupValidation) => setErrors(getYupErrors(yupValidation)));
+    };
+    validation();
+  }, [values]);
+
+  return {
+    handleChange, handleBlur, values, errors, touched,
+  };
+};`}
+    </Code>
+    <SignupFormSimple />
+    <p>
+      Para replicar o nosso segundo teste foi necessário criar um hook similar ao useField,
+      o que tambem consegui fazer com poucas linhas.
+    </p>
+    <Code>
+      {`const FormContext = React.createContext();
+
+const useFormField = ({ name }) => {
+  const {
+    values, errors, touched,
+    handleChange, handleBlur,
+  } = useContext(FormContext);
+
+  return [{
+    value: values[name],
+    onChange: handleChange,
+    onBlur: handleBlur,
+  },
+  {
+    error: errors[name],
+    touched: touched[name],
+  },
+  ];
+};`}
+    </Code>
+    <SignupForm2Simple />
+    <p>
+      Apesar do sucesso deste experimento, aqui implementamos apenas uma parte pequena de um lib
+      bem completa e testada e com certeza o recomendado seria usar o Formik e não recriar sua
+      própria lib, para finalizar temos mais alguns testes de uso do Formik e todo seu poder.
+    </p>
     <InviteFriends />
     <LinkedForm />
-    <SignupFormSimple />
-    <SignupForm2Simple />
-    <Reservation />
   </div>
 );
 
